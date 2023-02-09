@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class Ventana {
+    PreparedStatement ps;
     private JPanel panel;
     private JButton buscarButton;
     private JButton actualizar;
@@ -22,7 +23,7 @@ public class Ventana {
                 Connection con;
                 try{
                     con = getConection();
-                    String query = "SELECT * FROM CLIENTES2 WHERE Ced_Cli = "+ced.getText();
+                    String query = "SELECT * FROM CLIENTES2"+" WHERE Ced_Cli = "+ced.getText()+";";
 
                     Statement dialogo  = con.createStatement();
                     ResultSet resultado = dialogo.executeQuery(query);
@@ -70,23 +71,28 @@ public class Ventana {
         actualizar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Connection con2;
-                PreparedStatement ps;
+
+                Connection con2 = null;
 
                 try {
                         con2 = getConection();
-                        ps = con2.prepareStatement("UPDATE CLIENTES2 SET Nom_Cli=?,Celular_Cli=?,Email_Cli=? WHERE Ced_Cli=?"+ced.getText());
+                    ps = con2.prepareStatement("UPDATE CLIENTES2 SET " +
+
+                            "`Nom_Cli` = ?" +
+                            ", `Celular_Cli` = ?" +
+                            ", `Email_Cli` = ?" +
+                            " WHERE (`Ced_Cli` =" + ced.getText() + ");");
                         ps.setString(1,ced.getText());
                         ps.setString(2,Nom.getText());
                         ps.setString(3,cell.getText());
                         ps.setString(4,correo.getText());
-
+                    System.out.println(ps);
                         int res = ps.executeUpdate();
                         if (res > 0){
-                            JOptionPane.showMessageDialog(null,"Actualizacion Completa");
+                            JOptionPane.showMessageDialog(null,"Actualizacion Completa", "HECHO ",JOptionPane.INFORMATION_MESSAGE);
 
                         }else {
-                            JOptionPane.showMessageDialog(null,"Error al Actualizar");
+                            JOptionPane.showMessageDialog(null,"Error al Actualizar", "ERROR",JOptionPane.INFORMATION_MESSAGE);
                         }
 
                         con2.close();
@@ -109,9 +115,10 @@ public class Ventana {
     public static Connection getConection() {
         Connection con = null;
         String base = "INFORMACION";
-        String url = "jdbc:mysql://localhost:/" + base;
+        String url = "jdbc:mysql://localhost:3307/" + base;
         String user = "root";
-        String password = "12345";
+        String password = "Luchito2724";
+        String query = "SELECT * FROM CLIENTES2 WHERE Ced_Cli = 504871195 ";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");

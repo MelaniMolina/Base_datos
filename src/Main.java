@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:/INFORMACION", "root", "12345");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3307/INFORMACION", "root", "Luchito2724");
             String query = "SELECT * FROM CLIENTES2 WHERE Ced_Cli = 504871195 ";
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
