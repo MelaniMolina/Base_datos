@@ -21,19 +21,21 @@ public class Ventana {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Connection con;
-                try{
+                try {
                     con = getConection();
-                    String query = "SELECT * FROM CLIENTES2"+" WHERE Ced_Cli = "+ced.getText()+";";
+                    String query = "SELECT * FROM CLIENTES" + " WHERE Ced_Cli = " + ced.getText() + ";";
 
-                    Statement dialogo  = con.createStatement();
+                    Statement dialogo = con.createStatement();
                     ResultSet resultado = dialogo.executeQuery(query);
                     ResultSetMetaData datos = resultado.getMetaData();
 
                     int columnCount = datos.getColumnCount();
-                    JTable table = new JTable();
-                    DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    if (columnCount > 0){
-                        JOptionPane.showMessageDialog(null,"Si se encuentra en la Base");
+
+                    if(resultado.next()){
+
+                        JTable table = new JTable();
+                        DefaultTableModel model = (DefaultTableModel) table.getModel();
+                        JOptionPane.showMessageDialog(null, "Si se encuentra en la Base");
                         JTable panel = new JTable();
                         DefaultTableModel model1 = (DefaultTableModel) table.getModel();
 
@@ -56,9 +58,10 @@ public class Ventana {
                         resultado.close();
                         dialogo.close();
                         con.close();
-                    }else {
-                        JOptionPane.showMessageDialog(null, "No se encuentra en la Base");
-                    }
+
+                }else
+                {JOptionPane.showMessageDialog(null,"No se encuentr en la base");
+                }
                 }catch (HeadlessException | SQLException f){
                     System.err.println(f);
                 }
@@ -72,31 +75,27 @@ public class Ventana {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Connection con2 = null;
-
-                try {
-                        con2 = getConection();
-                    ps = con2.prepareStatement("UPDATE CLIENTES2 SET " +
-
+                Connection con;
+                try
+                {
+                    con = getConection();
+                    ps = con.prepareStatement("UPDATE `INFORMACION2`.`CLIENTES` SET " +
                             "`Nom_Cli` = ?" +
                             ", `Celular_Cli` = ?" +
                             ", `Email_Cli` = ?" +
                             " WHERE (`Ced_Cli` =" + ced.getText() + ");");
-                        ps.setString(1,ced.getText());
-                        ps.setString(2,Nom.getText());
-                        ps.setString(3,cell.getText());
-                        ps.setString(4,correo.getText());
+                    ps.setString(1, Nom.getText());
+                    ps.setString(2, cell.getText());
+                    ps.setString(3, correo.getText());
                     System.out.println(ps);
-                        int res = ps.executeUpdate();
-                        if (res > 0){
-                            JOptionPane.showMessageDialog(null,"Actualizacion Completa", "HECHO ",JOptionPane.INFORMATION_MESSAGE);
+                    int res = ps.executeUpdate();
 
-                        }else {
-                            JOptionPane.showMessageDialog(null,"Error al Actualizar", "ERROR",JOptionPane.INFORMATION_MESSAGE);
-                        }
+                    if (res > 0)
+                        JOptionPane.showMessageDialog(null, "Se Guardo correctamente!!", "Bien hecho", JOptionPane.INFORMATION_MESSAGE);
+                    else
+                        JOptionPane.showMessageDialog(null, "ERROR!!!", "ERROR", JOptionPane.ERROR_MESSAGE);
 
-                        con2.close();
-
+                    con.close();
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -114,11 +113,11 @@ public class Ventana {
 
     public static Connection getConection() {
         Connection con = null;
-        String base = "INFORMACION";
+        String base = "INFORMACION2";
         String url = "jdbc:mysql://localhost:3307/" + base;
         String user = "root";
         String password = "Luchito2724";
-        String query = "SELECT * FROM CLIENTES2 WHERE Ced_Cli = 504871195 ";
+        String query = "SELECT * FROM CLIENTES WHERE Ced_Cli = 504871195 ";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
